@@ -1,0 +1,643 @@
+<title>NAU FitHub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: six views behind one top bar (Home, Classes, Schedule, Membership, Join, Contact). One calm column, hairline rules, condensed display type. */
+:root {
+  --bg: #f2f4f1;
+  --surface: #ffffff;
+  --fg: #101512;
+  --muted: #5c665f;
+  --line: #d8ddd8;
+  --accent: #0e5a52;
+  --accent-fg: #ffffff;
+  --accent-soft: #dcebe8;
+  --danger: #a02b2b;
+  --font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1110; --surface: #141b19; --fg: #eaeeeb; --muted: #94a09a;
+    --line: #26302d; --accent: #5fd0be; --accent-fg: #06201c; --accent-soft: #12302b; --danger: #ef8a8a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1110; --surface: #141b19; --fg: #eaeeeb; --muted: #94a09a;
+  --line: #26302d; --accent: #5fd0be; --accent-fg: #06201c; --accent-soft: #12302b; --danger: #ef8a8a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: inherit; }
+a[data-go] { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+h1, h2, h3 { text-wrap: balance; }
+
+/* top bar */
+.bar { border-bottom: 1px solid var(--line); }
+.bar-in { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 16px; }
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
+.brand span { color: var(--accent); }
+.nav { display: flex; align-items: center; gap: 6px; overflow-x: auto; min-width: 0; }
+.nav a { text-decoration: none; font-size: 14px; color: var(--muted); padding: 8px 12px; border-radius: 2px; white-space: nowrap; }
+.nav a:hover { color: var(--fg); }
+.nav a[aria-current="page"] { color: var(--fg); box-shadow: inset 0 -2px 0 var(--accent); }
+.nav a.join { background: var(--accent); color: var(--accent-fg); margin-left: 8px; }
+.nav a.join[aria-current="page"] { box-shadow: none; outline: 2px solid var(--fg); outline-offset: 2px; }
+
+/* shared */
+.view { padding-block: 48px 64px; }
+.eyebrow { font-family: var(--font-display); font-weight: 600; font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+h1.page { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; font-size: clamp(40px, 7vw, 64px); line-height: .98; margin: 0 0 14px; }
+.lede { max-width: 56ch; color: var(--muted); font-size: 18px; margin: 0 0 36px; }
+h2 { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; font-size: clamp(30px, 4.5vw, 40px); line-height: 1; margin: 0 0 24px; }
+h3 { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; font-size: 24px; line-height: 1.05; margin: 0 0 6px; }
+.band { padding-block: 48px; border-top: 1px solid var(--line); }
+.note { font-size: 13px; color: var(--muted); margin: 18px 0 0; max-width: 70ch; }
+.btn { display: inline-block; padding: 13px 22px; font: 500 15px var(--font-body); text-decoration: none; border: 1px solid var(--fg); border-radius: 2px; background: transparent; color: var(--fg); cursor: pointer; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.btn:hover { opacity: .88; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.tag { display: inline-block; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 2px; white-space: nowrap; }
+
+/* home */
+.hero { padding-block: 24px 8px; }
+.hero h1 { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; font-size: clamp(52px, 11vw, 112px); line-height: .92; margin: 0 0 20px; max-width: 12ch; }
+.hero p { max-width: 46ch; color: var(--muted); font-size: 18px; margin: 0 0 28px; }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-top: 48px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.facts div { padding: 18px 16px 18px 0; }
+.facts b { display: block; font-family: var(--font-display); font-weight: 600; font-size: 36px; line-height: 1; font-variant-numeric: tabular-nums; }
+.facts span { font-size: 14px; color: var(--muted); }
+.cap { display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 40px; align-items: end; }
+.cap-now .num { font-family: var(--font-display); font-weight: 600; font-size: 88px; line-height: 1; font-variant-numeric: tabular-nums; }
+.cap-now .num small { font-size: 32px; color: var(--muted); font-weight: 500; }
+.meter { height: 6px; background: var(--line); margin: 14px 0 10px; border-radius: 1px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .6s ease; }
+.cap-now .state { font-size: 14px; color: var(--muted); margin: 0; }
+.bars { display: flex; align-items: flex-end; gap: 6px; height: 120px; }
+.bars div { flex: 1; min-width: 0; background: var(--line); border-radius: 1px 1px 0 0; }
+.bars div.on { background: var(--accent); }
+.axis { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 8px; font-variant-numeric: tabular-nums; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; list-style: none; margin: 0; padding: 0; }
+.steps li { border-top: 2px solid var(--fg); padding-top: 16px; }
+.steps b { display: block; font-family: var(--font-display); font-weight: 600; font-size: 26px; text-transform: uppercase; margin-bottom: 6px; }
+.steps p { margin: 0; color: var(--muted); }
+.cta-band { background: var(--fg); color: var(--bg); padding: 40px max(16px, 4vw); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+.cta-band h2 { margin: 0; color: var(--bg); }
+.cta-band .btn { border-color: var(--bg); color: var(--bg); }
+.cta-band .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+
+/* classes */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+.chips button, .tabs button { font: 500 14px var(--font-body); padding: 9px 16px; background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 2px; cursor: pointer; }
+.chips button[aria-pressed="true"], .tabs button[aria-selected="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 2px; padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card p { margin: 0; color: var(--muted); font-size: 15px; }
+.card .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.card .meta b { color: var(--fg); font-weight: 500; }
+.card .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.card .days { font-family: var(--font-display); font-weight: 600; font-size: 17px; letter-spacing: .06em; text-transform: uppercase; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+
+/* schedule */
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 20px; }
+.rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.rows li { display: grid; grid-template-columns: 100px minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.rows .t { font-family: var(--font-display); font-weight: 600; font-size: 26px; font-variant-numeric: tabular-nums; }
+.rows .n { font-weight: 500; font-size: 17px; }
+.rows .n span { display: block; font-weight: 400; font-size: 14px; color: var(--muted); }
+
+/* membership */
+.plan .price { font-size: 14px; color: var(--muted); }
+.plan ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.plan li { padding-left: 20px; position: relative; }
+.plan li::before { content: ""; position: absolute; left: 0; top: .6em; width: 10px; height: 2px; background: var(--accent); }
+.plan .btn { margin-top: auto; text-align: center; }
+
+/* join */
+.split { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+form { display: grid; gap: 20px; }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field label, fieldset legend { font-size: 14px; font-weight: 500; }
+.field input, .field select { font: 400 16px var(--font-body); padding: 12px 12px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 2px; width: 100%; min-width: 0; }
+.field input:focus, .field select:focus { border-color: var(--accent); }
+.hint { font-size: 13px; color: var(--muted); }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 8px; margin-top: 8px; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
+.check input { margin-top: 4px; accent-color: var(--accent); flex: none; }
+.panel { border: 1px solid var(--line); background: var(--surface); border-radius: 2px; padding: 22px; }
+.panel.ok { border-color: var(--accent); background: var(--accent-soft); }
+.panel.err { border-color: var(--danger); }
+.panel h3 { margin-bottom: 8px; }
+.panel p { margin: 0 0 8px; }
+.ref { font-family: var(--font-display); font-weight: 600; font-size: 34px; letter-spacing: .06em; }
+.sum { white-space: pre-wrap; overflow-wrap: anywhere; font: 14px/1.7 var(--font-body); background: var(--surface); border: 1px solid var(--line); padding: 14px; margin: 14px 0 16px; }
+.side ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 20px; counter-reset: s; }
+.side li { counter-increment: s; padding-left: 44px; position: relative; }
+.side li::before { content: counter(s); position: absolute; left: 0; top: -2px; font-family: var(--font-display); font-weight: 600; font-size: 30px; color: var(--accent); }
+.side b { display: block; font-weight: 500; }
+.side span { color: var(--muted); font-size: 15px; }
+
+/* contact */
+.contact { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-bottom: 8px; }
+.contact h3 { font-size: 15px; letter-spacing: .14em; color: var(--muted); margin-bottom: 8px; }
+.contact p { margin: 0; font-size: 17px; }
+.hours { width: 100%; border-collapse: collapse; font-size: 16px; font-variant-numeric: tabular-nums; }
+.hours td { padding: 3px 0; }
+.hours td:last-child { text-align: right; }
+details { border-top: 1px solid var(--line); padding: 16px 0; }
+details:last-of-type { border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 500; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--font-display); font-size: 26px; line-height: 1; color: var(--accent); }
+details[open] summary::after { content: "\2212"; }
+details p { margin: 10px 0 0; color: var(--muted); max-width: 62ch; }
+
+.mlink, .tabbar { display: none; }
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--bg); border-top: 1px solid var(--line); padding: 4px max(8px, env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+.tabbar a { flex: 1; min-width: 0; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; font-size: 11px; font-weight: 500; color: var(--muted); border-radius: 2px; }
+.tabbar svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.tabbar a[aria-current="page"] { color: var(--accent); }
+.tabbar a.join { color: var(--accent-fg); background: var(--accent); margin-left: 6px; }
+footer { border-top: 1px solid var(--line); padding-block: 28px 40px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+footer a { text-decoration: none; }
+
+@media (max-width: 760px) {
+  .bar-in { padding-block: 12px; }
+  .nav { display: none; }
+  .mlink { display: inline-block; font-size: 14px; color: var(--muted); text-decoration: none; padding: 10px 0 10px 12px; }
+  .mlink[aria-current="page"] { color: var(--accent); }
+  .tabbar { display: flex; }
+  footer { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  .view { padding-block: 28px 40px; }
+  .hero h1 { font-size: clamp(48px, 15vw, 72px); }
+  .hero p, .lede { font-size: 17px; }
+  .cta-row .btn { flex: 1 1 100%; text-align: center; padding-block: 15px; }
+  .cap-now .num { font-size: 72px; }
+  .chips, .tabs { flex-wrap: nowrap; overflow-x: auto; margin-inline: -16px; padding-inline: 16px; scrollbar-width: none; }
+  .chips button, .tabs button { flex: none; min-height: 44px; }
+  .tabs button { min-width: 52px; }
+  .card { padding: 18px; }
+  .field input, .field select { padding: 14px 12px; }
+  .check { padding-block: 4px; }
+  .btn { min-height: 48px; }
+  #f-submit { width: 100%; }
+  .cta-band { padding: 28px 16px; }
+  .cta-band .btn { width: 100%; text-align: center; }
+  summary { padding-block: 4px; min-height: 44px; align-items: center; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cap { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .steps, .contact, .split, .row2 { grid-template-columns: minmax(0, 1fr); }
+  .split { gap: 36px; }
+  .rows li { grid-template-columns: 84px minmax(0, 1fr); }
+  .rows .tag { grid-column: 2; justify-self: start; }
+}
+@media (prefers-reduced-motion: reduce) { .meter i { transition: none; } }
+</style>
+
+<div class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" data-go="home" role="button" tabindex="0">NAU <span>FitHub</span></a>
+    <a class="mlink" data-go="contact" role="button" tabindex="0" data-v="contact">Contact</a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a data-go="home" role="button" tabindex="0" data-v="home">Home</a>
+      <a data-go="classes" role="button" tabindex="0" data-v="classes">Classes</a>
+      <a data-go="schedule" role="button" tabindex="0" data-v="schedule">Schedule</a>
+      <a data-go="membership" role="button" tabindex="0" data-v="membership">Membership</a>
+      <a data-go="contact" role="button" tabindex="0" data-v="contact">Contact</a>
+      <a data-go="join" role="button" tabindex="0" data-v="join" class="join">Sign up</a>
+    </nav>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- HOME -->
+  <section class="view" id="view-home">
+    <div class="hero">
+      <h1>Train well. Skip the wait.</h1>
+      <p>The campus gym for NAU students. Check how busy it is before you walk over, pick a class, and scan in at the door.</p>
+      <div class="cta-row">
+        <a class="btn primary" data-go="join" role="button" tabindex="0">Sign up</a>
+        <a class="btn" data-go="classes" role="button" tabindex="0">Browse classes</a>
+      </div>
+      <div class="facts">
+        <div><b>50</b><span>people at a time, so it never feels packed</span></div>
+        <div><b>7 days</b><span>open every week of term</span></div>
+        <div><b id="nClasses">0</b><span>class types, from beginner up</span></div>
+        <div><b>QR</b><span>scan in at the entrance</span></div>
+      </div>
+    </div>
+
+    <div class="band" id="capacity" style="margin-top:48px">
+      <p class="eyebrow">Live capacity</p>
+      <h2>How busy is it right now</h2>
+      <div class="cap">
+        <div class="cap-now">
+          <div class="num"><span id="now">0</span><small> / 50</small></div>
+          <div class="meter" aria-hidden="true"><i id="fill"></i></div>
+          <p class="state" id="state">Checking</p>
+        </div>
+        <div>
+          <div class="bars" id="bars" role="img" aria-label="Typical number of people in the gym by hour"></div>
+          <div class="axis"><span>06:00</span><span>10:00</span><span>14:00</span><span>18:00</span><span>22:00</span></div>
+        </div>
+      </div>
+      <p class="note">Sample figures for this preview. The gym holds 50 people at a time.</p>
+    </div>
+
+    <div class="band">
+      <p class="eyebrow">Classes</p>
+      <h2>Find a class that fits</h2>
+      <div class="grid" id="homeClasses"></div>
+      <p style="margin:24px 0 0"><a class="btn" data-go="classes" role="button" tabindex="0">All classes</a></p>
+    </div>
+
+    <div class="band">
+      <p class="eyebrow">Getting started</p>
+      <h2>Three steps to your first session</h2>
+      <ol class="steps">
+        <li><b>Sign up</b><p>Fill in the short online form. It takes about two minutes.</p></li>
+        <li><b>Scan in</b><p>Show your QR code at the entrance. Your visit is logged for you.</p></li>
+        <li><b>Train</b><p>Use the open floor, or turn up to any class on the schedule.</p></li>
+      </ol>
+    </div>
+
+    <div class="cta-band">
+      <h2>Ready for your first session</h2>
+      <a class="btn primary" data-go="join" role="button" tabindex="0">Sign up now</a>
+    </div>
+  </section>
+
+  <!-- CLASSES -->
+  <section class="view" id="view-classes" hidden>
+    <p class="eyebrow">Classes</p>
+    <h1 class="page">Classes and courses</h1>
+    <p class="lede">Every class is open to registered members. Pick by level, then check the days and times below each card.</p>
+    <div class="chips" id="chips" role="group" aria-label="Filter by level"></div>
+    <div class="grid" id="classGrid"></div>
+    <p class="note">Sample classes for this preview. Names, durations and group sizes are placeholders until you confirm them.</p>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="view" id="view-schedule" hidden>
+    <p class="eyebrow">Schedule</p>
+    <h1 class="page">Weekly schedule</h1>
+    <p class="lede">Choose a day to see what is on. Today is selected for you.</p>
+    <div class="tabs" id="tabs" role="group" aria-label="Day of the week"></div>
+    <ul class="rows" id="rows"></ul>
+    <p class="note">Sample timetable. Replace with your real sessions before publishing.</p>
+  </section>
+
+  <!-- MEMBERSHIP -->
+  <section class="view" id="view-membership" hidden>
+    <p class="eyebrow">Membership</p>
+    <h1 class="page">Choose how you train</h1>
+    <p class="lede">Three simple options. Every member can see live capacity and scan in with a QR code.</p>
+    <div class="grid" id="plans"></div>
+    <p class="note">Plan names and what they include are a starting point. Fees are not set yet, so they are not shown.</p>
+  </section>
+
+  <!-- JOIN -->
+  <section class="view" id="view-join" hidden>
+    <p class="eyebrow">Sign up</p>
+    <h1 class="page">Join the gym</h1>
+    <p class="lede">One short form. Your details are visible only to gym management.</p>
+    <div class="split">
+      <div>
+        <div id="joinStatus"></div>
+        <form id="joinForm" aria-label="Gym sign-up form">
+          <div class="row2">
+            <div class="field"><label for="f-name">Full name</label><input id="f-name" type="text" autocomplete="name" required></div>
+            <div class="field"><label for="f-sid">Student ID</label><input id="f-sid" type="text" required></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" required></div>
+            <div class="field"><label for="f-phone">Phone</label><input id="f-phone" type="tel" autocomplete="tel" required></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="f-plan">Membership</label><select id="f-plan" required></select></div>
+            <div class="field"><label for="f-goal">Main goal</label>
+              <select id="f-goal">
+                <option>Build strength</option><option>Improve fitness</option><option>Lose weight</option><option>Stay active</option><option>Not sure yet</option>
+              </select>
+            </div>
+          </div>
+          <fieldset>
+            <legend>Classes you are interested in</legend>
+            <div class="checks" id="f-classes"></div>
+            <p class="hint">Optional. This only helps us plan the timetable.</p>
+          </fieldset>
+          <div class="row2">
+            <div class="field"><label for="f-ecn">Emergency contact name</label><input id="f-ecn" type="text" required></div>
+            <div class="field"><label for="f-ecp">Emergency contact phone</label><input id="f-ecp" type="tel" required></div>
+          </div>
+          <label class="check"><input id="f-health" type="checkbox" required><span>I confirm I am fit to exercise, or I have checked with a doctor.</span></label>
+          <label class="check"><input id="f-terms" type="checkbox" required><span>I agree to follow the gym rules and respect the 50-person limit.</span></label>
+          <div><button class="btn primary" id="f-submit" type="submit">Send my sign-up</button></div>
+          <p class="hint" id="f-msg" role="status"></p>
+        </form>
+      </div>
+      <aside class="side">
+        <h3>What happens next</h3>
+        <ol>
+          <li><b>We receive your sign-up</b><span>You get a reference number on screen straight away.</span></li>
+          <li><b>Collect your QR code</b><span>Bring your student card to the front desk on your first visit.</span></li>
+          <li><b>Start training</b><span>Scan in and use the floor, or join any class.</span></li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="view" id="view-contact" hidden>
+    <p class="eyebrow">Contact</p>
+    <h1 class="page">Visit and questions</h1>
+    <p class="lede">Everything you need before your first visit.</p>
+    <div class="contact">
+      <div>
+        <h3>Opening hours</h3>
+        <table class="hours">
+          <tr><td>Mon to Fri</td><td>06:00 to 22:00</td></tr>
+          <tr><td>Saturday</td><td>08:00 to 20:00</td></tr>
+          <tr><td>Sunday</td><td>09:00 to 18:00</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>Location</h3>
+        <p>NAU campus<br>Sports building, ground floor</p>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <p>fithub@your-campus.edu<br>+00 000 000 000</p>
+      </div>
+    </div>
+    <p class="note">Hours, address and contact details are placeholders until you send the real ones.</p>
+
+    <div class="band" style="margin-top:40px">
+      <p class="eyebrow">FAQ</p>
+      <h2>Common questions</h2>
+      <details><summary>What should I bring?</summary><p>Your student card, a towel, a water bottle and indoor training shoes.</p></details>
+      <details><summary>What happens when the gym is full?</summary><p>The gym holds 50 people. When it is full, wait at the entrance. Check live capacity on the home page before you come.</p></details>
+      <details><summary>Do I need to book a class?</summary><p>Turn up on time. Groups are limited, so arrive a few minutes early to secure a place.</p></details>
+      <details><summary>I am new. Where do I start?</summary><p>Try Gym Orientation or Strength Basics. Both are made for beginners.</p></details>
+      <details><summary>Can I bring a friend?</summary><p>Only registered members can train. A friend can sign up on this site first.</p></details>
+      <details><summary>Gym rules</summary><p>Wipe equipment after use. Return weights to the racks. Keep phone calls outside the training floor. Ask staff if you are unsure how to use a machine.</p></details>
+    </div>
+  </section>
+
+</main>
+
+<div class="wrap">
+  <footer>
+    <span>NAU FitHub. Open to registered students.</span>
+    <nav aria-label="Footer">
+      <a data-go="classes" role="button" tabindex="0">Classes</a><a data-go="schedule" role="button" tabindex="0">Schedule</a><a data-go="membership" role="button" tabindex="0">Membership</a><a data-go="contact" role="button" tabindex="0">Contact</a>
+    </nav>
+  </footer>
+</div>
+
+<nav class="tabbar" aria-label="Main">
+  <a data-go="home" role="button" tabindex="0" data-v="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg>Home</a>
+  <a data-go="classes" role="button" tabindex="0" data-v="classes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>Classes</a>
+  <a data-go="schedule" role="button" tabindex="0" data-v="schedule"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg>Schedule</a>
+  <a data-go="membership" role="button" tabindex="0" data-v="membership"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18M7 15h4"/></svg>Plans</a>
+  <a data-go="join" role="button" tabindex="0" data-v="join" class="join"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12a4 4 0 100-8 4 4 0 000 8zM2 21c0-4 3-6 7-6s7 2 7 6M19 8v6M16 11h6"/></svg>Sign up</a>
+</nav>
+
+<script>
+(function () {
+  var CAP = 50;
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  /* ---------- data (sample content) ---------- */
+  var classes = [
+    { id: 'orientation', name: 'Gym Orientation', level: 'Beginner', mins: 30, max: 10, blurb: 'A first walk through the floor, the machines and the safety rules. Ask anything.' },
+    { id: 'strength', name: 'Strength Basics', level: 'Beginner', mins: 45, max: 16, blurb: 'Learn the main lifts with light weights and clear coaching on technique.' },
+    { id: 'circuit', name: 'Express Circuit', level: 'All levels', mins: 30, max: 20, blurb: 'A fast full body circuit. Move station to station at your own pace.' },
+    { id: 'mobility', name: 'Mobility and Recovery', level: 'All levels', mins: 40, max: 20, blurb: 'Stretching and mobility work to loosen up after lectures and hard training.' },
+    { id: 'core', name: 'Core and Posture', level: 'All levels', mins: 30, max: 20, blurb: 'Short, focused work for your core, back and shoulders after long hours at a desk.' },
+    { id: 'cardio', name: 'Cardio Intervals', level: 'Intermediate', mins: 40, max: 20, blurb: 'Timed intervals on bikes, rowers and treadmills. Hard work, short rests.' },
+    { id: 'weekend', name: 'Weekend Circuit', level: 'Intermediate', mins: 50, max: 24, blurb: 'A longer group session on Saturday morning with a coach pushing the pace.' },
+    { id: 'challenge', name: 'Weekly Challenge', level: 'All levels', mins: 45, max: 30, blurb: 'A friendly competition each week. Beat your own score or climb the leaderboard.' }
+  ];
+  var byId = {}; classes.forEach(function (c) { byId[c.id] = c; });
+  var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  var plan = {
+    Mon: [['07:00', 'strength'], ['12:30', 'circuit'], ['18:00', 'mobility']],
+    Tue: [['07:00', 'cardio'], ['12:00', 'orientation'], ['17:30', 'core'], ['19:00', 'strength']],
+    Wed: [['07:00', 'circuit'], ['12:30', 'mobility'], ['18:30', 'challenge']],
+    Thu: [['07:00', 'strength'], ['12:00', 'orientation'], ['17:30', 'cardio'], ['19:00', 'core']],
+    Fri: [['07:00', 'circuit'], ['12:30', 'strength'], ['17:00', 'mobility']],
+    Sat: [['09:00', 'weekend'], ['10:30', 'orientation']],
+    Sun: [['10:00', 'mobility']]
+  };
+  var daysOf = {};
+  days.forEach(function (d) { plan[d].forEach(function (s) { (daysOf[s[1]] = daysOf[s[1]] || []).indexOf(d) < 0 && daysOf[s[1]].push(d); }); });
+  var plans = [
+    { id: 'Day pass', name: 'Day pass', who: 'Try the gym once', items: ['One visit, any open hour', 'Use of the open training floor', 'Sign up at the front desk'] },
+    { id: 'Monthly', name: 'Monthly', who: 'Flexible and easy to renew', items: ['Unlimited open training', 'All classes on the schedule', 'QR entry and live capacity'] },
+    { id: 'Semester', name: 'Semester', who: 'One payment for the whole term', items: ['Everything in Monthly', 'Covers the full semester', 'Nothing to renew mid-term'] }
+  ];
+
+  /* ---------- rendering ---------- */
+  function classCard(c, withButton) {
+    var card = el('article', 'card');
+    var top = el('div', 'top');
+    top.appendChild(el('h3', null, c.name));
+    top.appendChild(el('span', 'tag', c.level));
+    card.appendChild(top);
+    card.appendChild(el('p', null, c.blurb));
+    var meta = el('div', 'meta');
+    var a = el('span'); a.appendChild(el('b', null, c.mins + ' min')); meta.appendChild(a);
+    var b = el('span'); b.appendChild(el('b', null, 'Up to ' + c.max)); b.appendChild(document.createTextNode(' people')); meta.appendChild(b);
+    card.appendChild(meta);
+    card.appendChild(el('div', 'days', (daysOf[c.id] || []).join('  ·  ')));
+    return card;
+  }
+  $('nClasses').textContent = classes.length;
+  ['strength', 'circuit', 'cardio'].forEach(function (id) { $('homeClasses').appendChild(classCard(byId[id])); });
+
+  var level = 'All';
+  var levels = ['All', 'Beginner', 'Intermediate', 'All levels'];
+  function drawClasses() {
+    var g = $('classGrid'); g.innerHTML = '';
+    classes.forEach(function (c) { if (level === 'All' || c.level === level) g.appendChild(classCard(c)); });
+    Array.prototype.forEach.call($('chips').children, function (b) { b.setAttribute('aria-pressed', b.dataset.l === level ? 'true' : 'false'); });
+  }
+  levels.forEach(function (l) {
+    var b = el('button', null, l === 'All' ? 'All classes' : l); b.type = 'button'; b.dataset.l = l;
+    b.addEventListener('click', function () { level = l; drawClasses(); });
+    $('chips').appendChild(b);
+  });
+  drawClasses();
+
+  plans.forEach(function (p) {
+    var card = el('article', 'card plan');
+    card.appendChild(el('h3', null, p.name));
+    card.appendChild(el('div', 'price', p.who));
+    var ul = el('ul'); p.items.forEach(function (i) { ul.appendChild(el('li', null, i)); }); card.appendChild(ul);
+    var a = el('a', 'btn primary', 'Choose ' + p.name); a.setAttribute('data-go', 'join'); a.setAttribute('role', 'button'); a.setAttribute('tabindex', '0'); a.addEventListener('click', function () { $('f-plan').value = p.id; });
+    card.appendChild(a);
+    $('plans').appendChild(card);
+    var o = el('option', null, p.name); o.value = p.id; $('f-plan').appendChild(o);
+  });
+  $('f-plan').value = 'Monthly';
+
+  classes.forEach(function (c) {
+    var l = el('label', 'check'); var i = el('input'); i.type = 'checkbox'; i.value = c.id; i.name = 'cls';
+    l.appendChild(i); l.appendChild(el('span', null, c.name)); $('f-classes').appendChild(l);
+  });
+
+  /* capacity */
+  var typical = [8, 14, 22, 26, 20, 16, 18, 24, 22, 17, 19, 28, 38, 44, 40, 30, 16];
+  var hourNow = new Date().getHours(), idx = hourNow - 6;
+  typical.forEach(function (v, i) {
+    var d = document.createElement('div'); d.style.height = Math.round(v / CAP * 100) + '%';
+    d.title = (i + 6) + ':00, about ' + v + ' people'; if (i === idx) d.className = 'on'; $('bars').appendChild(d);
+  });
+  var open = idx >= 0 && idx < typical.length, n = open ? typical[idx] : 0;
+  $('now').textContent = open ? n : '–';
+  $('fill').style.width = (n / CAP * 100) + '%';
+  $('state').textContent = !open ? 'Closed right now. Opens at 06:00.' : n < 20 ? 'Quiet. Plenty of space.' : n < 36 ? 'Moderate. Most equipment is free.' : 'Busy. Expect a short wait on machines.';
+
+  /* schedule */
+  var today = (new Date().getDay() + 6) % 7;
+  function showDay(i) {
+    Array.prototype.forEach.call($('tabs').children, function (b, k) { b.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+    var rows = $('rows'); rows.innerHTML = '';
+    plan[days[i]].forEach(function (s) {
+      var c = byId[s[1]], li = el('li');
+      li.appendChild(el('span', 't', s[0]));
+      var nm = el('div', 'n', c.name); nm.appendChild(el('span', null, c.mins + ' min · up to ' + c.max + ' people')); li.appendChild(nm);
+      li.appendChild(el('span', 'tag', c.level));
+      rows.appendChild(li);
+    });
+  }
+  days.forEach(function (d, i) {
+    var b = el('button', null, d); b.type = 'button'; b.addEventListener('click', function () { showDay(i); }); $('tabs').appendChild(b);
+  });
+  showDay(today);
+
+  /* ---------- router ---------- */
+  var VIEWS = ['home', 'classes', 'schedule', 'membership', 'join', 'contact'];
+  function show(h) {
+    if (VIEWS.indexOf(h) < 0) h = 'home';
+    VIEWS.forEach(function (v) { $('view-' + v).hidden = v !== h; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-v]'), function (a) {
+      if (a.dataset.v === h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    window.scrollTo(0, 0);
+    if (h === 'join') setTimeout(function () { if (typeof checkExisting === 'function') checkExisting(); }, 0);
+  }
+  function route() { show(location.hash.replace('#', '')); }
+  window.addEventListener('hashchange', route);
+  /* Menu items are plain elements with data-go, handled here, so no browser link behaviour is involved. */
+  function go(h) {
+    if (VIEWS.indexOf(h) < 0) return;
+    show(h);
+    try { history.replaceState(null, '', '#' + h); } catch (x) {}
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('[data-go]') : null;
+    if (!a) return;
+    e.preventDefault();
+    go(a.getAttribute('data-go'));
+  }, true);
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    if ((e.key === 'Enter' || e.key === ' ') && t && t.getAttribute && t.getAttribute('data-go')) { e.preventDefault(); go(t.getAttribute('data-go')); }
+  });
+  route();
+
+  /* ---------- sign-up ---------- */
+  /* The form is always visible. Inside Claude it saves privately. Anywhere else it gives a summary to show at the front desk. */
+  var db = null, uid = null, saving = false, checked = false;
+  var status = $('joinStatus'), form = $('joinForm'), msg = $('f-msg');
+
+  function panel(kind, title, lines, ref) {
+    status.innerHTML = '';
+    var p = el('div', 'panel ' + kind); p.appendChild(el('h3', null, title));
+    lines.forEach(function (t) { p.appendChild(el('p', null, t)); });
+    if (ref) p.appendChild(el('div', 'ref', ref));
+    p.style.marginBottom = '24px'; status.appendChild(p);
+  }
+  function showDone(ref) {
+    form.hidden = true;
+    panel('ok', 'You are signed up', ['Show this reference number at the front desk with your student card to collect your QR code.'], ref);
+  }
+  function summaryText(d) {
+    return ['NAU FitHub sign-up', 'Reference: ' + d.ref, 'Name: ' + d.name, 'Student ID: ' + d.studentId,
+      'Email: ' + d.email, 'Phone: ' + d.phone, 'Membership: ' + d.plan, 'Goal: ' + d.goal,
+      'Classes: ' + (d.classes.map(function (id) { return byId[id].name; }).join(', ') || 'none'),
+      'Emergency contact: ' + d.emergencyName + ', ' + d.emergencyPhone].join('\n');
+  }
+  function showOffline(d) {
+    form.hidden = true; status.innerHTML = '';
+    var p = el('div', 'panel ok'); p.style.marginBottom = '24px';
+    p.appendChild(el('h3', null, 'Your sign-up summary'));
+    p.appendChild(el('p', null, 'This was not sent online. Show this screen at the front desk with your student card, or copy the details and send them to us.'));
+    p.appendChild(el('div', 'ref', d.ref));
+    var pre = el('pre', 'sum', summaryText(d)); p.appendChild(pre);
+    var row = el('div', 'cta-row');
+    var copy = el('button', 'btn primary', 'Copy details'); copy.type = 'button';
+    copy.addEventListener('click', function () {
+      function fb() { var r = document.createRange(); r.selectNodeContents(pre); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); copy.textContent = 'Selected. Press copy.'; }
+      try { navigator.clipboard.writeText(summaryText(d)).then(function () { copy.textContent = 'Copied'; }, fb); } catch (e) { fb(); }
+    });
+    var back = el('button', 'btn', 'Edit details'); back.type = 'button';
+    back.addEventListener('click', function () { status.innerHTML = ''; form.hidden = false; saving = false; $('f-submit').disabled = false; msg.textContent = ''; });
+    row.appendChild(copy); row.appendChild(back); p.appendChild(row); status.appendChild(p);
+  }
+
+  async function ensureDb() {
+    if (db && uid) return true;
+    try {
+      db = db || await claude.use('db');
+      var user = await claude.use('user');
+      if (!db || !user) return false;
+      uid = await user.id();
+      if (!uid) return false;
+      var cw = await user.can('data.write');
+      return cw !== false;
+    } catch (e) { return false; }
+  }
+  async function checkExisting() {
+    if (checked) return; checked = true;
+    if (!(await ensureDb())) { msg.textContent = 'Online saving is not available in this view. You will get a summary to show at the front desk.'; return; }
+    try { var snap = await db.doc('signups/' + uid).get(); if (snap.exists) showDone(snap.data().ref || ''); } catch (e) {}
+  }
+
+  form.addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    if (saving) return;
+    saving = true; $('f-submit').disabled = true; msg.textContent = 'Sending…';
+    var chosen = Array.prototype.map.call(document.querySelectorAll('input[name="cls"]:checked'), function (i) { return i.value; });
+    var ref = 'FH-' + String(Math.floor(100000 + Math.random() * 900000));
+    var data = {
+      ref: ref, name: $('f-name').value.trim(), studentId: $('f-sid').value.trim(),
+      email: $('f-email').value.trim(), phone: $('f-phone').value.trim(),
+      plan: $('f-plan').value, goal: $('f-goal').value, classes: chosen,
+      emergencyName: $('f-ecn').value.trim(), emergencyPhone: $('f-ecp').value.trim(),
+      fitToExercise: true, agreedToRules: true, createdAt: new Date().toISOString()
+    };
+    if (await ensureDb()) {
+      try { await db.doc('signups/' + uid).set(data); showDone(ref); return; }
+      catch (e) {
+        if (e && e.code === 'quota_exceeded') { msg.textContent = 'Sign-ups are full right now. Please ask at the front desk.'; saving = false; $('f-submit').disabled = false; return; }
+      }
+    }
+    showOffline(data);
+  });
+})();
+</script>
